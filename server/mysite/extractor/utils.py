@@ -29,13 +29,14 @@ def extract_dates(input_string):
     result = {}
     for index in range(len(extracted_text)):
         word = extracted_text[index]
+        extracted_date = None
         # Have multiple regex since its easier to debug
         if re.match(regex_date_with_slashes, word):
             extracted_date = re.match(regex_date_with_slashes, word).string
         elif re.match(regex_date_with_dashes, word):
             extracted_date = re.match(regex_date_with_dashes, word).string
 
-        if extracted_date not in result:
+        if extracted_date and extracted_date not in result:
             result[str(extracted_date)] = {
                 "date": extracted_date,
                 "snippet": generate_snippet(index, extracted_text)
