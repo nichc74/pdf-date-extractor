@@ -39,7 +39,10 @@
     <v-main>
       <div>
         <Calendar/>
-        <button @click="handleButtonClick"> Click Me! </button>
+        <div class="buttonsWrapper">
+          <v-btn id="apiButton" @click="handleButtonClick" color="secondary" elevation="1"> Test that API! </v-btn>
+          <v-btn id="pdfUploadBtn" color="primary" elevation="1"> Upload PDFs </v-btn>
+        </div>
       </div>
     </v-main>
   </v-app>
@@ -74,7 +77,6 @@ export default {
       axios.post('http://127.0.0.1:8000/extractor/parse-pdfs/', {
         headers: {
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
         }
       }).then(response => {
           console.log('Im in the response')
@@ -88,4 +90,13 @@ export default {
 </script>
 
 <style>
+.buttonsWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 25px;
+}
+
+#apiButton {
+  margin-right: 10px;
+}
 </style>
