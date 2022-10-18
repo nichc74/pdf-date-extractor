@@ -41,8 +41,9 @@
         <Calendar/>
         <div class="buttonsWrapper">
           <b-button id="pdfUploadBtn" type="is-primary">Upload PDFs</b-button>
-          <b-button id="apiButton" @click="handleButtonClick" type="is-info">API Test</b-button>
+          <b-button id="apiButton" v-on:click="handleButtonClick" type="is-info">API Test</b-button>
         </div>
+        <FileUploader/>
       </div>
     </v-main>
   </v-app>
@@ -51,11 +52,13 @@
 <script>
 import axios from 'axios';
 import Calendar from './components/Calendar';
+import FileUploader from './components/FileUploader';
 
 export default {
   name: 'App',
   components: {
     Calendar,
+    FileUploader
   },
   data: () => ({
     parsedPdfData: {}
