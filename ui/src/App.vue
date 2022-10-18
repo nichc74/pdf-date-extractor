@@ -39,25 +39,51 @@
     <v-main>
       <div>
         <Calendar/>
+        <button @click="handleButtonClick"> Click Me! </button>
       </div>
     </v-main>
   </v-app>
 </template>
 
 <script>
-
+import axios from 'axios';
 import Calendar from './components/Calendar';
 
 export default {
   name: 'App',
-
   components: {
     Calendar,
   },
-
   data: () => ({
-    //
+    parsedPdfData: {}
   }),
+  mounted () {
+    axios.post('http://127.0.0.1:8000/extractor/parse-pdfs/', {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(response => {
+        this.parsedPdfData = response.data
+        console.log(response)
+      }
+    )
+  },
+  methods: {
+    handleButtonClick() {
+      console.log('Im being clicked!')
+      axios.post('http://127.0.0.1:8000/extractor/parse-pdfs/', {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        }
+      }).then(response => {
+          console.log('Im in the response')
+          this.parsedPdfData = response.data
+          console.log(response)
+        }
+      )
+    }
+  }
 };
 </script>
 
