@@ -29,7 +29,7 @@ export default {
             for(let i = 0; i < this.files.length; i++) {
                 let currPDF = this.files[i]
                 console.log(currPDF)
-                formData.append('pdf[' + i + ']: ', currPDF)
+                formData.append('pdf[' + i + ']', currPDF)
 
             }
             
@@ -38,10 +38,11 @@ export default {
                 formData,
                 {
                     headers: {
-                        'Content-Type': 'multipart/form-data'
+                        'Content-Type': 'multipart/form-data',
                     }
                 }
-            ).then(function() {
+            ).then(function(response) {
+                console.log(response.data)
                 console.log('SUCCESS!!');
             }).catch(function(){
                 console.log('FAILURE!!');
