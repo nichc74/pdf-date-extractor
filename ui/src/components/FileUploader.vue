@@ -15,14 +15,14 @@ import axios from 'axios';
 export default {
     name: 'FileUploader',
     data: () => ({
-        files: ''
+        files: '',
+        logOfExtractedDates: {}
     }),
     methods: {
         handleFileUploads(event){
             this.files = event.target.files;
         },
         submitPDFs() {
-            console.log('Submitting PDFs')
             let formData = new FormData();
 
             // Append files to formData to prepare to send
@@ -32,8 +32,8 @@ export default {
                 formData.append('pdf[' + i + ']', currPDF)
 
             }
-            
-            // Make post request to upload files to django server
+
+            var self = this;
             axios.post('http://127.0.0.1:8000/extractor/parse-pdfs/',
                 formData,
                 {
@@ -42,9 +42,10 @@ export default {
                     }
                 }
             ).then(function(response) {
-                console.log(response.data)
-                console.log('SUCCESS!!');
-            }).catch(function(){
+                let data = response.data
+                self.logOfExtractedDates = data.log_of_extracted_dates
+            }).catch(function(error){
+                console.log(error)
                 console.log('FAILURE!!');
             });
         }
