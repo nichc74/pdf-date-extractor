@@ -40,8 +40,8 @@
       <div>
         <Calendar/>
         <div class="buttonsWrapper">
-          <v-btn id="apiButton" @click="handleButtonClick" color="secondary" elevation="1"> Test that API! </v-btn>
-          <v-btn id="pdfUploadBtn" color="primary" elevation="1"> Upload PDFs </v-btn>
+          <b-button id="pdfUploadBtn" type="is-primary">Upload PDFs</b-button>
+          <b-button id="apiButton" @click="handleButtonClick" type="is-info">API Test</b-button>
         </div>
       </div>
     </v-main>
@@ -96,7 +96,7 @@ export default {
   margin-top: 25px;
 }
 
-#apiButton {
+#pdfUploadBtn {
   margin-right: 10px;
 }
 </style>
