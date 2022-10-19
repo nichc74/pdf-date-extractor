@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 
 LENGTH_OF_SNIPPET = 4
 
@@ -24,7 +25,6 @@ def generate_snippet(index, extracted_text):
 
     return result
 
-
 def extract_dates(file_name, pdf_text, dates_for_curr_pdf):
     extracted_text = pdf_text.split(' ')
     for index in range(len(extracted_text)):
@@ -32,9 +32,11 @@ def extract_dates(file_name, pdf_text, dates_for_curr_pdf):
         extracted_date = None
         # Have multiple regex since its easier to debug
         if re.match(regex_date_with_slashes, word):
-            extracted_date = re.match(regex_date_with_slashes, word).string
+            regex_date = re.match(regex_date_with_slashes, word).string
+            extracted_date = datetime.strptime(regex_date, "%m/%d/%Y").strftime("%Y/%m/%d")
         elif re.match(regex_date_with_dashes, word):
-            extracted_date = re.match(regex_date_with_dashes, word).string
+            regex_date = re.match(regex_date_with_dashes, word).string
+            extracted_date = datetime.strptime(regex_date, "%m-%d-%Y").strftime("%Y/%m/%d")
 
         if extracted_date:
             file_date_key = file_name + '_[tmp]_' + str(extracted_date)

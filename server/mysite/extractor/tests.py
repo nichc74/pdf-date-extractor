@@ -1,6 +1,10 @@
 from django.test import TestCase
 from unittest import skip
-from extractor.utils import generate_snippet, extract_dates, massage_calendar_dates
+from extractor.utils import (
+    generate_snippet,
+    extract_dates,
+    massage_calendar_dates
+)
 
 
 class TestGenerateDateSnippet(TestCase):
@@ -45,8 +49,8 @@ class TestExtractDates(TestCase):
         result = {}
         extract_dates(self.file_name, test_string, result)
         expected_result = {
-            "testFileName.pdf_10/30/2019": {
-                "date": "10/30/2019",
+            "testFileName.pdf_[tmp]_2019/10/30": {
+                "date": "2019/10/30",
                 "snippet": '10/30/2019 Terms of Service |'
             }
         }
@@ -57,8 +61,8 @@ class TestExtractDates(TestCase):
         result = {}
         extract_dates(self.file_name, test_string, result)
         expected_result = {
-            "testFileName.pdf_10-10-2020": {
-                "date": "10-10-2020",
+            "testFileName.pdf_[tmp]_2020/10/10": {
+                "date": "2020/10/10",
                 "snippet": 'the date: 10-10-2020 and I'
             }
         }
@@ -69,8 +73,8 @@ class TestExtractDates(TestCase):
         result = {}
         extract_dates(self.file_name, test_string, result)
         expected_result = {
-            "testFileName.pdf_10/10/2020": {
-                "date": "10/10/2020",
+            "testFileName.pdf_[tmp]_2020/10/10": {
+                "date": "2020/10/10",
                 "snippet": 'the date: 10/10/2020 and I'
             }
         }
@@ -81,12 +85,12 @@ class TestExtractDates(TestCase):
         result = {}
         extract_dates(self.file_name, test_string, result)
         expected_result = {
-            "testFileName.pdf_10/10/2020": {
-                "date": "10/10/2020",
+            "testFileName.pdf_[tmp]_2020/10/10": {
+                "date": "2020/10/10",
                 "snippet": 'the date: 10/10/2020 and some'
             },
-            "testFileName.pdf_10/20/2020": {
-                "date": "10/20/2020",
+            "testFileName.pdf_[tmp]_2020/10/20": {
+                "date": "2020/10/20",
                 "snippet": 'some other 10/20/2020 I hope'
             }
         }
@@ -97,8 +101,8 @@ class TestExtractDates(TestCase):
         result = {}
         extract_dates(self.file_name, test_string, result)
         expected_result = {
-            "testFileName.pdf_10/10/2020": {
-                "date": "10/10/2020",
+            "testFileName.pdf_[tmp]_2020/10/10": {
+                "date": "2020/10/10",
                 "snippet": 'the date: 10/10/2020 and some\nsome other 10/10/2020 I hope'
             },
         }
@@ -109,8 +113,8 @@ class TestExtractDates(TestCase):
         result = {}
         extract_dates(self.file_name, test_string, result)
         expected_result = {
-            "testFileName.pdf_10/10/2020": {
-                "date": "10/10/2020",
+            "testFileName.pdf_[tmp]_2020/10/10": {
+                "date": "2020/10/10",
                 "snippet": 'the date: 10/10/2020 and some'
             },
         }

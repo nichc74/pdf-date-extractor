@@ -18,13 +18,20 @@ class ExtractorView(View):
         for pdf_key in pdf_keys:
             # Setup PDF Reader
             pdf = pdf_files_uploaded[pdf_key]
-            pdfFileObj = pdf.read() 
+            pdfFileObj = pdf.read()
             pdfReader = PdfFileReader(io.BytesIO(pdfFileObj))
 
-            # Loop through each file and start extracting dates
+            dates_for_curr_pdf = {}
+            # Query through individual pdf pages
             for i in range(pdfReader.numPages):
                 curr_page = pdfReader.pages[i].extract_text()
-                extract_dates(log_of_extracted_dates, curr_page)
+                extract_dates(pdf.name, curr_page, dates_for_curr_pdf)
+
+            # After going through whole pdf document we want to update master log
+            if dates_for_curr_pdf:
+                log_of_extracted_dates.update(dates_for_curr_pdf)
+
+        print(log_of_extracted_dates)
 
         return_data = {
             'message': 'You are pinging the proper view',
