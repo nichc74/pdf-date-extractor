@@ -11,6 +11,10 @@
               <v-card-text>
                   {{selectedEvent.snippet}}
               </v-card-text>
+              <!-- <a :href=selectedEvent.path>
+                <b-button>Preview PDF</b-button>
+              </a> -->
+              <b-button v-on:click="previewPdfHandler(selectedEvent.path)">Preview PDF</b-button>
           </v-card>
       </v-menu>
       <div class="wrapper">
@@ -86,6 +90,9 @@ export default {
             open();
         }
         nativeEvent.stopPropagation();
+    },
+    previewPdfHandler(filePath) {
+      window.open(filePath, '_blank');
     },
     setToday () {
       this.focus = ''
