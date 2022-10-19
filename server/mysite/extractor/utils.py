@@ -33,10 +33,10 @@ def extract_dates(file_name, pdf_text, dates_for_curr_pdf):
         # Have multiple regex since its easier to debug
         if re.match(regex_date_with_slashes, word):
             regex_date = re.match(regex_date_with_slashes, word).string
-            extracted_date = datetime.strptime(regex_date, "%m/%d/%Y").strftime("%Y/%m/%d")
+            extracted_date = datetime.strptime(regex_date, "%m/%d/%Y").strftime("%Y-%m-%d")
         elif re.match(regex_date_with_dashes, word):
             regex_date = re.match(regex_date_with_dashes, word).string
-            extracted_date = datetime.strptime(regex_date, "%m-%d-%Y").strftime("%Y/%m/%d")
+            extracted_date = datetime.strptime(regex_date, "%m-%d-%Y").strftime("%Y-%m-%d")
 
         if extracted_date:
             file_date_key = file_name + '_[tmp]_' + str(extracted_date)
@@ -48,7 +48,6 @@ def extract_dates(file_name, pdf_text, dates_for_curr_pdf):
                     "date": extracted_date,
                     "snippet": generate_snippet(index, extracted_text)
                 }
-
 
 def massage_calendar_dates(extracted_dates):
     result = []

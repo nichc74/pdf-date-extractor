@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
 from PyPDF2 import PdfFileReader
-from extractor.utils import extract_dates
+from extractor.utils import extract_dates, massage_calendar_dates
 
 @method_decorator(csrf_exempt, name='dispatch')
 class ExtractorView(View):
@@ -35,7 +35,7 @@ class ExtractorView(View):
 
         return_data = {
             'message': 'You are pinging the proper view',
-            'log_of_extracted_dates': log_of_extracted_dates
+            'log_of_extracted_dates': massage_calendar_dates(log_of_extracted_dates)
         }
 
         return JsonResponse(return_data, status=201)

@@ -13,8 +13,20 @@
               </v-card-text>
           </v-card>
       </v-menu>
+      <b-button
+        id="todayBttn"
+        type="is-primary"
+        outlined
+        v-on:click="setToday"
+      >
+        Today
+      </b-button>
+      <b-button type="is-primary" v-on:click="prev">PREV</b-button>
+      <b-button type="is-primary" v-on:click="next">NEXT</b-button>
+      {{displayMonthYear}}
       <v-calendar
-          :events="events"
+          ref="calendar"
+          :events="otherEvents"
           @click:event="showEvent"
           v-model="focus"
           :type="type"
@@ -25,7 +37,10 @@
 
 <script>
 export default {
-  name: 'CodingBeautyCalendar',
+  name: 'EventCalendar',
+  props: {
+    otherEvents: Array
+  },
   data: () => {
     return {
       today: new Date().toISOString().substring(0, 10),
@@ -35,6 +50,7 @@ export default {
       selectedOpen: false,
       selectedElement: undefined,
       selectedEvent: {},
+      displayMonthYear: '',
       events: [
         {
           name: 'Some Event 1',
@@ -59,29 +75,43 @@ export default {
       ],
     };
   },
+  mounted () {
+    this.$refs.calendar.checkChange()
+    this.displayMonthYear = this.$refs.calendar.title
+  },
   methods: {
       showEvent({ nativeEvent, event }) {
-          const open = () => {
-              this.selectedEvent = event;
-              this.selectedElement = nativeEvent.target;
-              requestAnimationFrame(() =>
-                  requestAnimationFrame(
-                      () => (this.selectedOpen = true)
-                  )
-              );
-          };
-
-          if (this.selectedOpen) {
-              this.selectedOpen = false;
-              requestAnimationFrame(() =>
-              requestAnimationFrame(() => open())
-              );
-          } else {
-              open();
-          }
-
-          nativeEvent.stopPropagation();
-      },
+        const open = () => {
+            this.selectedEvent = event;
+            this.selectedElement = nativeEvent.target;
+            requestAnimationFrame(() =>
+                requestAnimationFrame(
+                    () => (this.selectedOpen = true)
+                )
+            );
+        };
+        if (this.selectedOpen) {
+            this.selectedOpen = false;
+            requestAnimationFrame(() =>
+            requestAnimationFrame(() => open())
+            );
+        } else {
+            open();
+        }
+        nativeEvent.stopPropagation();
+    },
+    setToday () {
+      this.focus = ''
+      this.displayMonthYear = this.$refs.calendar.title
+    },
+    prev () {
+      this.$refs.calendar.prev()
+      this.displayMonthYear = this.$refs.calendar.title
+    },
+    next () {
+      this.$refs.calendar.next()
+      this.displayMonthYear = this.$refs.calendar.title
+    },
   }
 };
 </script>

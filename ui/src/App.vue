@@ -38,12 +38,18 @@
 
     <v-main>
       <div>
-        <Calendar/>
+        <Calendar :otherEvents="logOfExtractedDates"/>
         <div class="buttonsWrapper">
           <b-button id="pdfUploadBtn" type="is-primary">Upload PDFs</b-button>
-          <b-button id="apiButton" v-on:click="handleButtonClick" type="is-info">API Test</b-button>
+          <b-button id="apiButton" type="is-info">API Test</b-button>
         </div>
-        <FileUploader/>
+        <div id="fileUploader">
+          <label>
+              PDFs
+              <input type="file" id="files" ref="files" multiple @change="handleFileUploads( $event )"/>
+          </label>
+          <b-button id="uploadSubmitBtn" v-on:click="submitPDFs()" type="is-info">Submit</b-button>
+        </div>
       </div>
     </v-main>
   </v-app>
@@ -52,43 +58,45 @@
 <script>
 import axios from 'axios';
 import Calendar from './components/Calendar';
-import FileUploader from './components/FileUploader';
-
-// const HARBOUR_BLUE = "#2f5a89"
 
 export default {
   name: 'App',
   components: {
     Calendar,
-    FileUploader
   },
   data: () => ({
-    parsedPdfData: {}
+    files: '',
+    logOfExtractedDates: []
   }),
-  mounted () {
-    axios.post('http://127.0.0.1:8000/extractor/parse-pdfs/', {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then(response => {
-        this.parsedPdfData = response.data
-        console.log(response)
-      }
-    )
-  },
   methods: {
-    handleButtonClick() {
-      console.log('Im being clicked!')
-      axios.post('http://127.0.0.1:8000/extractor/parse-pdfs/', {
-        headers: {
-          'Content-Type': 'application/json',
+    handleFileUploads(event){
+      this.files = event.target.files;
+    },
+    submitPDFs() {
+      let formData = new FormData();
+
+      // Append files to formData to prepare to send
+      for(let i = 0; i < this.files.length; i++) {
+        let currPDF = this.files[i]
+        console.log(currPDF)
+        formData.append('pdf[' + i + ']', currPDF)
+      }
+
+      var self = this;
+      axios.post('http://127.0.0.1:8000/extractor/parse-pdfs/',
+        formData,
+        {
+          headers: {
+              'Content-Type': 'multipart/form-data',
+          }
         }
-      }).then(response => {
-          console.log('Im in the response')
-          this.parsedPdfData = response.data
-          console.log(response)
-        }
-      )
+      ).then(function(response) {
+        let data = response.data
+        self.logOfExtractedDates = data.log_of_extracted_dates
+      }).catch(function(error){
+        console.log(error)
+        console.log('FAILURE!!');
+      });
     }
   }
 };
