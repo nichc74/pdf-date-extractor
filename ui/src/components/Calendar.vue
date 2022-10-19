@@ -13,25 +13,35 @@
               </v-card-text>
           </v-card>
       </v-menu>
-      <b-button
-        id="todayBttn"
-        type="is-primary"
-        outlined
-        v-on:click="setToday"
-      >
-        Today
-      </b-button>
-      <b-button type="is-primary" v-on:click="prev">PREV</b-button>
-      <b-button type="is-primary" v-on:click="next">NEXT</b-button>
-      {{displayMonthYear}}
-      <v-calendar
-          ref="calendar"
-          :events="otherEvents"
-          @click:event="showEvent"
-          v-model="focus"
-          :type="type"
-          now="2022-10-17"
-      ></v-calendar>
+      <div class="wrapper">
+        <div class="calendarHeader">
+          <b-button
+            class="todayBttn"
+            type="is-primary"
+            outlined
+            v-on:click="setToday"
+          >
+            Today
+          </b-button>
+          <b-button class="prevBttn" type="is-primary" v-on:click="prev">PREV</b-button>
+          <b-button type="is-primary" v-on:click="next">NEXT</b-button>
+        </div>
+        <!-- This is gross but leaving here for sake of MVP -->
+        <div v-if="$refs.calendar">
+          {{ $refs.calendar.title }}
+        </div>
+        <div v-else>
+          {{displayMonthYear}}
+        </div>
+        <v-calendar
+            ref="calendar"
+            :events="otherEvents"
+            @click:event="showEvent"
+            v-model="focus"
+            :type="type"
+            now="2022-10-17"
+        ></v-calendar>
+      </div>
   </div>
 </template>
 
@@ -44,35 +54,12 @@ export default {
   data: () => {
     return {
       today: new Date().toISOString().substring(0, 10),
-      focus: '',
-      // defaults to month
       type: "month",
+      focus: '',
       selectedOpen: false,
       selectedElement: undefined,
       selectedEvent: {},
       displayMonthYear: '',
-      events: [
-        {
-          name: 'Some Event 1',
-          start: '2022-10-17',
-          color: "green",
-          snippet: "Some test snippet"
-        },
-        {
-          name: 'Some Event 2',
-          start: '2022-10-01',
-          end: '2022-10-02',
-          color: "green",
-          snippet: "Some snippet"
-        },
-        {
-          name: 'Some Event 3',
-          start: '2022-10-15',
-          end: '2022-10-10',
-          color: "green",
-          snippet: "Some snippet"
-        },
-      ],
     };
   },
   mounted () {
@@ -102,28 +89,36 @@ export default {
     },
     setToday () {
       this.focus = ''
-      this.displayMonthYear = this.$refs.calendar.title
     },
     prev () {
       this.$refs.calendar.prev()
-      this.displayMonthYear = this.$refs.calendar.title
     },
     next () {
       this.$refs.calendar.next()
-      this.displayMonthYear = this.$refs.calendar.title
     },
   }
 };
 </script>
 
 <style>
-#calendarContainer {
+.todayBttn, .prevBttn {
+  margin-right: 10px;
+}
+
+.calendarHeader {
+  justify-content: flex-start;
+  margin-bottom: 5px;
+}
+
+.wrapper {
   height: 800px;
   width: 75%;
   display: flex;
   margin-left: 12.5%;
   margin-right: 12.5%;
   margin-top: 5%;
+  display: flex;
+  flex-direction: column;
 }
 </style>
 

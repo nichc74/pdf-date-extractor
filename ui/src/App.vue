@@ -39,12 +39,8 @@
     <v-main>
       <div>
         <Calendar :otherEvents="logOfExtractedDates"/>
-        <div class="buttonsWrapper">
-          <b-button id="pdfUploadBtn" type="is-primary">Upload PDFs</b-button>
-          <b-button id="apiButton" type="is-info">API Test</b-button>
-        </div>
-        <div id="fileUploader">
-          <label>
+        <div class="fileUploader">
+          <label class="pdfLabel">
               PDFs
               <input type="file" id="files" ref="files" multiple @change="handleFileUploads( $event )"/>
           </label>
@@ -109,7 +105,14 @@ export default {
   margin-top: 25px;
 }
 
-#pdfUploadBtn {
-  margin-right: 10px;
+.fileUploader {
+  display: flex;
+  justify-content: center;
+  margin-top: 25px;
+}
+
+.pdfLabel {
+  display: flex;
+  align-items: center;
 }
 </style>
