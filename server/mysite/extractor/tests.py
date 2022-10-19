@@ -42,16 +42,18 @@ class TestGenerateDateSnippet(TestCase):
 class TestExtractDates(TestCase):
     def setUp(self):
         self.file_name = 'testFileName.pdf'
+        self.test_file_path = 'some_file_path'
 
     # IN PROGRESS UNIT TEST SUITE
     def test_initial_string(self):
         test_string = "10/30/2019 Terms of Service | KTVU FOX 2 https://www .ktvu.com/terms-of-service 1/21Terms of Service Terms of Service"
         result = {}
-        extract_dates(self.file_name, test_string, result)
+        extract_dates(self.file_name, test_string, result, self.test_file_path)
         expected_result = {
-            "testFileName.pdf_[tmp]_2019/10/30": {
-                "date": "2019/10/30",
-                "snippet": '10/30/2019 Terms of Service |'
+            "testFileName.pdf_[tmp]_2019-10-30": {
+                "date": "2019-10-30",
+                "snippet": '10/30/2019 Terms of Service |',
+                "path": "some_file_path"
             }
         }
         self.assertEqual(expected_result, result)
@@ -59,11 +61,12 @@ class TestExtractDates(TestCase):
     def test_extracting_date_with_dashes(self):
         test_string = "checking for the date: 10-10-2020 and I hope it works"
         result = {}
-        extract_dates(self.file_name, test_string, result)
+        extract_dates(self.file_name, test_string, result, self.test_file_path)
         expected_result = {
-            "testFileName.pdf_[tmp]_2020/10/10": {
-                "date": "2020/10/10",
-                "snippet": 'the date: 10-10-2020 and I'
+            "testFileName.pdf_[tmp]_2020-10-10": {
+                "date": "2020-10-10",
+                "snippet": 'the date: 10-10-2020 and I',
+                "path": "some_file_path"
             }
         }
         self.assertEqual(expected_result, result)
@@ -71,11 +74,12 @@ class TestExtractDates(TestCase):
     def test_extracting_date_with_slashes(self):
         test_string = "checking for the date: 10/10/2020 and I hope it works"
         result = {}
-        extract_dates(self.file_name, test_string, result)
+        extract_dates(self.file_name, test_string, result, self.test_file_path)
         expected_result = {
-            "testFileName.pdf_[tmp]_2020/10/10": {
-                "date": "2020/10/10",
-                "snippet": 'the date: 10/10/2020 and I'
+            "testFileName.pdf_[tmp]_2020-10-10": {
+                "date": "2020-10-10",
+                "snippet": 'the date: 10/10/2020 and I',
+                "path": "some_file_path"
             }
         }
         self.assertEqual(expected_result, result)
@@ -83,15 +87,17 @@ class TestExtractDates(TestCase):
     def test_multiple_dates_in_text(self):
         test_string = "checking for the date: 10/10/2020 and some other 10/20/2020 I hope it works"
         result = {}
-        extract_dates(self.file_name, test_string, result)
+        extract_dates(self.file_name, test_string, result, self.test_file_path)
         expected_result = {
-            "testFileName.pdf_[tmp]_2020/10/10": {
-                "date": "2020/10/10",
-                "snippet": 'the date: 10/10/2020 and some'
+            "testFileName.pdf_[tmp]_2020-10-10": {
+                "date": "2020-10-10",
+                "snippet": 'the date: 10/10/2020 and some',
+                "path": "some_file_path"
             },
-            "testFileName.pdf_[tmp]_2020/10/20": {
-                "date": "2020/10/20",
-                "snippet": 'some other 10/20/2020 I hope'
+            "testFileName.pdf_[tmp]_2020-10-20": {
+                "date": "2020-10-20",
+                "snippet": 'some other 10/20/2020 I hope',
+                "path": "some_file_path"
             }
         }
         self.assertEqual(expected_result, result)
@@ -99,11 +105,12 @@ class TestExtractDates(TestCase):
     def test_multiple_snippets_under_one_date(self):
         test_string = "checking for the date: 10/10/2020 and some other 10/10/2020 I hope it works"
         result = {}
-        extract_dates(self.file_name, test_string, result)
+        extract_dates(self.file_name, test_string, result, self.test_file_path)
         expected_result = {
-            "testFileName.pdf_[tmp]_2020/10/10": {
-                "date": "2020/10/10",
-                "snippet": 'the date: 10/10/2020 and some\nsome other 10/10/2020 I hope'
+            "testFileName.pdf_[tmp]_2020-10-10": {
+                "date": "2020-10-10",
+                "snippet": 'the date: 10/10/2020 and some\nsome other 10/10/2020 I hope',
+                "path": "some_file_path"
             },
         }
         self.assertEqual(expected_result, result)
@@ -111,11 +118,12 @@ class TestExtractDates(TestCase):
     def test_multiple_snippets_under_one_date_does_not_include_duplicates(self):
         test_string = "checking for the date: 10/10/2020 and some test test the date: 10/10/2020 and some it works"
         result = {}
-        extract_dates(self.file_name, test_string, result)
+        extract_dates(self.file_name, test_string, result, self.test_file_path)
         expected_result = {
-            "testFileName.pdf_[tmp]_2020/10/10": {
-                "date": "2020/10/10",
-                "snippet": 'the date: 10/10/2020 and some'
+            "testFileName.pdf_[tmp]_2020-10-10": {
+                "date": "2020-10-10",
+                "snippet": 'the date: 10/10/2020 and some',
+                "path": "some_file_path"
             },
         }
         self.assertEqual(expected_result, result)
@@ -124,32 +132,36 @@ class TestExtractDates(TestCase):
     def test_extracting_date_with_full_month_spelled_out(self):
         test_string = "checking for the date: October 10, 2020 and I hope it works"
         result = {}
-        extract_dates(self.file_name, test_string, result)
+        extract_dates(self.file_name, test_string, result, self.test_file_path)
         self.assertEqual("the date: October 10, 2020 and I", result)
 
     @skip("Skipping for now...")
     def test_extracting_date_with_partial_month_spelled_out(self):
         test_string = "checking for the date: Oct 10, 2020 and I hope it works"
         result = {}
-        extract_dates(self.file_name, test_string, result)
+        extract_dates(self.file_name, test_string, result, self.test_file_path)
         self.assertEqual("the date: Oct 10, 2020 and I", result)
 
     @skip("Skipping for now...")
     def test_extracting_date_with_full_month_spelled_out_minus_space(self):
         test_string = "checking for the date: Octorber 10,2020 and I hope it works"
         result = {}
-        extract_dates(self.file_name, test_string, result)
+        extract_dates(self.file_name, test_string, result, self.test_file_path)
         self.assertEqual("the date: Octorber 10,2020 and I", result)
 
 
 class TestMassageExtractedDates(TestCase):
     def setUp(self):
         self.extracted_dates = {
-            'test_file.pdf_[tmp]_10/30/2019': {
-                'date': '10/30/2019', 'snippet': '10/30/2019 Terms of Service |'
+            'test_file.pdf_[tmp]_2019-10-30': {
+                'date': '2019-10-30',
+                'snippet': '10/30/2019 Terms of Service |',
+                "path": "some_file_path"
             },
-            'TestInsertMe.pdf_[tmp]_11/11/2020': {
-                'date': '11/11/2020', 'snippet': '11/11/2020 Iterating Over and Reducing'
+            'TestInsertMe.pdf_[tmp]_2020-11-11': {
+                'date': '2020-11-11',
+                'snippet': '11/11/2020 Iterating Over and Reducing',
+                "path": "some_file_path"
             }
         }
     
@@ -158,15 +170,18 @@ class TestMassageExtractedDates(TestCase):
         expected_result = [
             {
                 'name': 'test_file.pdf',
-                'start': '10/30/2019',
+                'start': '2019-10-30',
                 'color': '#2f5a89',
-                'snippet': '10/30/2019 Terms of Service |'
+                'snippet': '10/30/2019 Terms of Service |',
+                "path": "some_file_path"
+
             },
             {
                 'name': 'TestInsertMe.pdf',
-                'start': '11/11/2020',
+                'start': '2020-11-11',
                 'color': '#2f5a89',
-                'snippet': '11/11/2020 Iterating Over and Reducing'
+                'snippet': '11/11/2020 Iterating Over and Reducing',
+                "path": "some_file_path"
             }
         ]
         self.assertEqual(expected_result, result)

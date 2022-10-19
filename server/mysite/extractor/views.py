@@ -1,9 +1,11 @@
 import io
 
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from django.core.files.storage import FileSystemStorage
+
 
 from PyPDF2 import PdfFileReader
 from extractor.utils import extract_dates, massage_calendar_dates
@@ -21,11 +23,17 @@ class ExtractorView(View):
             pdfFileObj = pdf.read()
             pdfReader = PdfFileReader(io.BytesIO(pdfFileObj))
 
+            # Store in FileSystemStorage
+            file_storage = FileSystemStorage()
+            file_storage_save = file_storage.save(pdf.name, pdf)
+            file_url = request.build_absolute_uri('/')[:-1] + file_storage.url(file_storage_save)
+            print('This is file_url: ', file_url)
+
             dates_for_curr_pdf = {}
             # Query through individual pdf pages
             for i in range(pdfReader.numPages):
                 curr_page = pdfReader.pages[i].extract_text()
-                extract_dates(pdf.name, curr_page, dates_for_curr_pdf)
+                extract_dates(pdf.name, curr_page, dates_for_curr_pdf, file_url)
 
             # After going through whole pdf document we want to update master log
             if dates_for_curr_pdf:

@@ -25,7 +25,8 @@ def generate_snippet(index, extracted_text):
 
     return result
 
-def extract_dates(file_name, pdf_text, dates_for_curr_pdf):
+
+def extract_dates(file_name, pdf_text, dates_for_curr_pdf, file_url):
     extracted_text = pdf_text.split(' ')
     for index in range(len(extracted_text)):
         word = extracted_text[index]
@@ -46,7 +47,8 @@ def extract_dates(file_name, pdf_text, dates_for_curr_pdf):
             else:
                 dates_for_curr_pdf[file_date_key] = {
                     "date": extracted_date,
-                    "snippet": generate_snippet(index, extracted_text)
+                    "snippet": generate_snippet(index, extracted_text),
+                    "path": file_url
                 }
 
 def massage_calendar_dates(extracted_dates):
@@ -62,6 +64,7 @@ def massage_calendar_dates(extracted_dates):
             'name': split_key[0],
             'start': split_key[1],
             'color': harbour_blue_hex,
-            'snippet': obj.get('snippet')
+            'snippet': obj.get('snippet'),
+            'path': obj.get('path')
         })
     return result
