@@ -1,6 +1,6 @@
 from django.test import TestCase
 from unittest import skip
-from extractor.utils import generate_snippet, extract_dates
+from extractor.utils import generate_snippet, extract_dates, massage_calendar_dates
 
 
 class TestGenerateDateSnippet(TestCase):
@@ -104,6 +104,17 @@ class TestExtractDates(TestCase):
         }
         self.assertEqual(expected_result, result)
 
+    def test_multiple_snippets_under_one_date_does_not_include_duplicates(self):
+        test_string = "checking for the date: 10/10/2020 and some test test the date: 10/10/2020 and some it works"
+        result = {}
+        extract_dates(self.file_name, test_string, result)
+        expected_result = {
+            "testFileName.pdf_10/10/2020": {
+                "date": "10/10/2020",
+                "snippet": 'the date: 10/10/2020 and some'
+            },
+        }
+        self.assertEqual(expected_result, result)
 
     @skip("Skipping for now...")
     def test_extracting_date_with_full_month_spelled_out(self):
@@ -125,3 +136,35 @@ class TestExtractDates(TestCase):
         result = {}
         extract_dates(self.file_name, test_string, result)
         self.assertEqual("the date: Octorber 10,2020 and I", result)
+
+
+class TestMassageExtractedDates(TestCase):
+    def setUp(self):
+        self.extracted_dates = {
+            'test_file.pdf_[tmp]_10/30/2019': {
+                'date': '10/30/2019', 'snippet': '10/30/2019 Terms of Service |'
+            },
+            'TestInsertMe.pdf_[tmp]_11/11/2020': {
+                'date': '11/11/2020', 'snippet': '11/11/2020 Iterating Over and Reducing'
+            }
+        }
+    
+    def test_simple_massage(self):
+        result = massage_calendar_dates(self.extracted_dates)
+        expected_result = [
+            {
+                'name': 'test_file.pdf',
+                'start': '10/30/2019',
+                'color': '#2f5a89',
+                'snippet': '10/30/2019 Terms of Service |'
+            },
+            {
+                'name': 'TestInsertMe.pdf',
+                'start': '11/11/2020',
+                'color': '#2f5a89',
+                'snippet': '11/11/2020 Iterating Over and Reducing'
+            }
+        ]
+        self.assertEqual(expected_result, result)
+    
+

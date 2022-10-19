@@ -4,6 +4,7 @@ LENGTH_OF_SNIPPET = 4
 
 regex_date_with_slashes = "(\d|\d{2})\/(\d|\d{2})\/(\d{4})"
 regex_date_with_dashes = "(\d|\d{2})-(\d|\d{2})-(\d{4})"
+harbour_blue_hex = '#2f5a89'
 
 def generate_snippet(index, extracted_text):
     result = ""
@@ -36,11 +37,30 @@ def extract_dates(file_name, pdf_text, dates_for_curr_pdf):
             extracted_date = re.match(regex_date_with_dashes, word).string
 
         if extracted_date:
-            file_date_key = file_name + '_' + str(extracted_date)
-            if file_date_key in dates_for_curr_pdf:
+            file_date_key = file_name + '_[tmp]_' + str(extracted_date)
+            generated_snippet = generate_snippet(index, extracted_text)
+            if (file_date_key in dates_for_curr_pdf) and (generated_snippet not in dates_for_curr_pdf[file_date_key]["snippet"]):
                 dates_for_curr_pdf[file_date_key]["snippet"] += '\n' + generate_snippet(index, extracted_text)
             else:
                 dates_for_curr_pdf[file_date_key] = {
                     "date": extracted_date,
                     "snippet": generate_snippet(index, extracted_text)
                 }
+
+
+def massage_calendar_dates(extracted_dates):
+    result = []
+    file_date_keys = extracted_dates.keys()
+    print(file_date_keys)
+
+    for key in file_date_keys:
+        obj = extracted_dates[key]
+        print(obj)
+        split_key = key.split('_[tmp]_')
+        result.append({
+            'name': split_key[0],
+            'start': split_key[1],
+            'color': harbour_blue_hex,
+            'snippet': obj.get('snippet')
+        })
+    return result
