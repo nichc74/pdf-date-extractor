@@ -54,6 +54,8 @@ import axios from 'axios';
 import Calendar from './components/Calendar';
 import FileUploader from './components/FileUploader';
 
+// const HARBOUR_BLUE = "#2f5a89"
+
 export default {
   name: 'App',
   components: {

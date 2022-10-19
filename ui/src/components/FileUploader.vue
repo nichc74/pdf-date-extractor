@@ -54,8 +54,6 @@ export default {
 </script>
 
 <style>
-#uploadSubmitBtn {
-}
 </style>
   
   

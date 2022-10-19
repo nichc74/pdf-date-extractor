@@ -24,7 +24,7 @@ def generate_snippet(index, extracted_text):
     return result
 
 
-def extract_dates(log_of_extracted_dates, pdf_text):
+def extract_dates(file_name, pdf_text, dates_for_curr_pdf):
     extracted_text = pdf_text.split(' ')
     for index in range(len(extracted_text)):
         word = extracted_text[index]
@@ -35,9 +35,12 @@ def extract_dates(log_of_extracted_dates, pdf_text):
         elif re.match(regex_date_with_dashes, word):
             extracted_date = re.match(regex_date_with_dashes, word).string
 
-        if extracted_date and extracted_date not in log_of_extracted_dates:
-            log_of_extracted_dates[str(extracted_date)] = {
-                "date": extracted_date,
-                "snippet": generate_snippet(index, extracted_text)
-            }
-    return log_of_extracted_dates
+        if extracted_date:
+            file_date_key = file_name + '_' + str(extracted_date)
+            if file_date_key in dates_for_curr_pdf:
+                dates_for_curr_pdf[file_date_key]["snippet"] += '\n' + generate_snippet(index, extracted_text)
+            else:
+                dates_for_curr_pdf[file_date_key] = {
+                    "date": extracted_date,
+                    "snippet": generate_snippet(index, extracted_text)
+                }

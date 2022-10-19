@@ -36,13 +36,16 @@ class TestGenerateDateSnippet(TestCase):
 
 
 class TestExtractDates(TestCase):
+    def setUp(self):
+        self.file_name = 'testFileName.pdf'
+
     # IN PROGRESS UNIT TEST SUITE
     def test_initial_string(self):
         test_string = "10/30/2019 Terms of Service | KTVU FOX 2 https://www .ktvu.com/terms-of-service 1/21Terms of Service Terms of Service"
         result = {}
-        extract_dates(result, test_string)
+        extract_dates(self.file_name, test_string, result)
         expected_result = {
-            "10/30/2019": {
+            "testFileName.pdf_10/30/2019": {
                 "date": "10/30/2019",
                 "snippet": '10/30/2019 Terms of Service |'
             }
@@ -52,9 +55,9 @@ class TestExtractDates(TestCase):
     def test_extracting_date_with_dashes(self):
         test_string = "checking for the date: 10-10-2020 and I hope it works"
         result = {}
-        extract_dates(result, test_string)
+        extract_dates(self.file_name, test_string, result)
         expected_result = {
-            "10-10-2020": {
+            "testFileName.pdf_10-10-2020": {
                 "date": "10-10-2020",
                 "snippet": 'the date: 10-10-2020 and I'
             }
@@ -64,9 +67,9 @@ class TestExtractDates(TestCase):
     def test_extracting_date_with_slashes(self):
         test_string = "checking for the date: 10/10/2020 and I hope it works"
         result = {}
-        extract_dates(result, test_string)
+        extract_dates(self.file_name, test_string, result)
         expected_result = {
-            "10/10/2020": {
+            "testFileName.pdf_10/10/2020": {
                 "date": "10/10/2020",
                 "snippet": 'the date: 10/10/2020 and I'
             }
@@ -76,37 +79,49 @@ class TestExtractDates(TestCase):
     def test_multiple_dates_in_text(self):
         test_string = "checking for the date: 10/10/2020 and some other 10/20/2020 I hope it works"
         result = {}
-        extract_dates(result, test_string)
+        extract_dates(self.file_name, test_string, result)
         expected_result = {
-            "10/10/2020": {
+            "testFileName.pdf_10/10/2020": {
                 "date": "10/10/2020",
                 "snippet": 'the date: 10/10/2020 and some'
             },
-            "10/20/2020": {
+            "testFileName.pdf_10/20/2020": {
                 "date": "10/20/2020",
                 "snippet": 'some other 10/20/2020 I hope'
             }
         }
-        # import pdb;pdb.set_trace()
         self.assertEqual(expected_result, result)
+    
+    def test_multiple_snippets_under_one_date(self):
+        test_string = "checking for the date: 10/10/2020 and some other 10/10/2020 I hope it works"
+        result = {}
+        extract_dates(self.file_name, test_string, result)
+        expected_result = {
+            "testFileName.pdf_10/10/2020": {
+                "date": "10/10/2020",
+                "snippet": 'the date: 10/10/2020 and some\nsome other 10/10/2020 I hope'
+            },
+        }
+        self.assertEqual(expected_result, result)
+
 
     @skip("Skipping for now...")
     def test_extracting_date_with_full_month_spelled_out(self):
         test_string = "checking for the date: October 10, 2020 and I hope it works"
         result = {}
-        extract_dates(result, test_string)
+        extract_dates(self.file_name, test_string, result)
         self.assertEqual("the date: October 10, 2020 and I", result)
 
     @skip("Skipping for now...")
     def test_extracting_date_with_partial_month_spelled_out(self):
         test_string = "checking for the date: Oct 10, 2020 and I hope it works"
         result = {}
-        extract_dates(result, test_string)
+        extract_dates(self.file_name, test_string, result)
         self.assertEqual("the date: Oct 10, 2020 and I", result)
 
     @skip("Skipping for now...")
     def test_extracting_date_with_full_month_spelled_out_minus_space(self):
         test_string = "checking for the date: Octorber 10,2020 and I hope it works"
         result = {}
-        extract_dates(result, test_string)
+        extract_dates(self.file_name, test_string, result)
         self.assertEqual("the date: Octorber 10,2020 and I", result)
