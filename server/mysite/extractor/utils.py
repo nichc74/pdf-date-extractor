@@ -3,8 +3,14 @@ from datetime import datetime
 
 LENGTH_OF_SNIPPET = 4
 
-regex_date_with_slashes = "(\d|\d{2})\/(\d|\d{2})\/(\d{4})"
-regex_date_with_dashes = "(\d|\d{2})-(\d|\d{2})-(\d{4})"
+# MM/DD/YYYY - middle endian
+regex_mid_end_with_slashes = "(\d|\d{2})\/(\d|\d{2})\/(\d{4})"
+regex_mid_end_with_dashes = "(\d|\d{2})-(\d|\d{2})-(\d{4})"
+
+# YYYY/MM/DD - big-endian
+regex_big_end_with_slashes = "^(\d{4})\/(\d{1,2})\/(\d{1,2})$"
+regex_big_end_with_dashes = "^(\d{4})-(\d{1,2})-(\d{1,2})$"
+
 harbour_blue_hex = '#2f5a89'
 
 def generate_snippet(index, extracted_text):
@@ -33,12 +39,18 @@ def extract_dates(file_name, pdf_text, dates_for_curr_pdf, file_url):
         word = extracted_text[index]
         extracted_date = None
         # Have multiple regex since its easier to debug
-        if re.match(regex_date_with_slashes, word):
-            regex_date = re.match(regex_date_with_slashes, word).string
+        if re.match(regex_mid_end_with_slashes, word):
+            regex_date = re.match(regex_mid_end_with_slashes, word).string
             extracted_date = datetime.strptime(regex_date, "%m/%d/%Y").strftime("%Y-%m-%d")
-        elif re.match(regex_date_with_dashes, word):
-            regex_date = re.match(regex_date_with_dashes, word).string
+        elif re.match(regex_mid_end_with_dashes, word):
+            regex_date = re.match(regex_mid_end_with_dashes, word).string
             extracted_date = datetime.strptime(regex_date, "%m-%d-%Y").strftime("%Y-%m-%d")
+        elif re.match(regex_big_end_with_slashes, word):
+            regex_date = re.match(regex_big_end_with_slashes, word).string
+            extracted_date = datetime.strptime(regex_date, "%Y/%m/%d").strftime("%Y-%m-%d")
+        elif re.match(regex_big_end_with_dashes, word):
+            regex_date = re.match(regex_big_end_with_dashes, word).string
+            extracted_date = datetime.strptime(regex_date, "%Y-%m-%d").strftime("%Y-%m-%d")
 
         if extracted_date:
             file_date_key = file_name + '_[tmp]_' + str(extracted_date)

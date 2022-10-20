@@ -83,7 +83,7 @@ class TestExtractDates(TestCase):
             }
         }
         self.assertEqual(expected_result, result)
-    
+
     def test_multiple_dates_in_text(self):
         test_string = "checking for the date: 10/10/2020 and some other 10/20/2020 I hope it works"
         result = {}
@@ -91,12 +91,12 @@ class TestExtractDates(TestCase):
         expected_result = {
             "testFileName.pdf_[tmp]_2020-10-10": {
                 "date": "2020-10-10",
-                "snippet": 'the date: 10/10/2020 and some',
+                "snippet": '...the date: 10/10/2020 and some...',
                 "path": "some_file_path"
             },
             "testFileName.pdf_[tmp]_2020-10-20": {
                 "date": "2020-10-20",
-                "snippet": 'some other 10/20/2020 I hope',
+                "snippet": '...some other 10/20/2020 I hope...',
                 "path": "some_file_path"
             }
         }
@@ -125,6 +125,32 @@ class TestExtractDates(TestCase):
                 "snippet": '...the date: 10/10/2020 and some...',
                 "path": "some_file_path"
             },
+        }
+        self.assertEqual(expected_result, result)
+
+    def test_extract_big_endian_date_with_slashes(self):
+        test_string = "2019/10/30 Terms of Service | KTVU FOX 2 https://www .ktvu.com/terms-of-service 1/21Terms of Service Terms of Service"
+        result = {}
+        extract_dates(self.file_name, test_string, result, self.test_file_path)
+        expected_result = {
+            "testFileName.pdf_[tmp]_2019-10-30": {
+                "date": "2019-10-30",
+                "snippet": '2019/10/30 Terms of Service |...',
+                "path": "some_file_path"
+            }
+        }
+        self.assertEqual(expected_result, result)
+
+    def test_extract_big_endian_date_with_dashes(self):
+        test_string = "2019-10-30 Terms of Service | KTVU FOX 2 https://www .ktvu.com/terms-of-service 1/21Terms of Service Terms of Service"
+        result = {}
+        extract_dates(self.file_name, test_string, result, self.test_file_path)
+        expected_result = {
+            "testFileName.pdf_[tmp]_2019-10-30": {
+                "date": "2019-10-30",
+                "snippet": '2019-10-30 Terms of Service |...',
+                "path": "some_file_path"
+            }
         }
         self.assertEqual(expected_result, result)
 
