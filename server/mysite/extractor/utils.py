@@ -7,11 +7,17 @@ LENGTH_OF_SNIPPET = 4
 regex_mid_end_with_slashes = "(\d|\d{2})\/(\d|\d{2})\/(\d{4})"
 regex_mid_end_with_dashes = "(\d|\d{2})-(\d|\d{2})-(\d{4})"
 
-# YYYY/MM/DD - big-endian
+# YYYY/MM/DD - big endian
 regex_big_end_with_slashes = "^(\d{4})\/(\d{1,2})\/(\d{1,2})$"
 regex_big_end_with_dashes = "^(\d{4})-(\d{1,2})-(\d{1,2})$"
 
+# DD MM YYYY - little endian with month spelled out
+regex_lttle_end_spelled = r"^(\d{1,2})\s((\bJanuary)|(\bFebruary)|(\bMarch)|(\bApril)|(\bMay)|(\bJune)|(\bJuly)|(\bAugust)|(\bSeptember)|(\bOctober)|(\bNovember)|(\bDecember))\s(\d{4})"
+
+full_month_regex = r"^((\bJanuary)|(\bFebruary)|(\bMarch)|(\bApril)|(\bMay)|(\bJune)|(\bJuly)|(\bAugust)|(\bSeptember)|(\bOctober)|(\bNovember)|(\bDecember))$"
+
 harbour_blue_hex = '#2f5a89'
+
 
 def generate_snippet(index, extracted_text):
     result = ""
@@ -51,6 +57,12 @@ def extract_dates(file_name, pdf_text, dates_for_curr_pdf, file_url):
         elif re.match(regex_big_end_with_dashes, word):
             regex_date = re.match(regex_big_end_with_dashes, word).string
             extracted_date = datetime.strptime(regex_date, "%Y-%m-%d").strftime("%Y-%m-%d")
+        elif re.match(full_month_regex, word):
+            # Checking for spelled out dates
+            poss_spelled_date = encap_poss_date(index, extracted_text)
+            if re.match(regex_lttle_end_spelled, poss_spelled_date):
+                regex_date = re.match(regex_lttle_end_spelled, poss_spelled_date).string
+                extracted_date = datetime.strptime(regex_date, "%d %B %Y").strftime("%Y-%m-%d")
 
         if extracted_date:
             file_date_key = file_name + '_[tmp]_' + str(extracted_date)
@@ -63,6 +75,18 @@ def extract_dates(file_name, pdf_text, dates_for_curr_pdf, file_url):
                     "snippet": generate_snippet(index, extracted_text),
                     "path": file_url
                 }
+
+
+def encap_poss_date(index, extracted_text):
+    full_month_right_offset = 2
+    full_month_left_offset = 1
+
+    return ' '.join(extracted_text[index - full_month_left_offset:index + full_month_right_offset])
+
+def extract_and_format_date(date_format, regex, word):
+    regex_date = re.match(regex, word).string
+    return datetime.strptime(regex_date, date_format).strftime("%Y-%m-%d")
+
 
 def massage_calendar_dates(extracted_dates):
     result = []

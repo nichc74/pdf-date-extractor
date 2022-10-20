@@ -3,8 +3,29 @@ from unittest import skip
 from extractor.utils import (
     generate_snippet,
     extract_dates,
-    massage_calendar_dates
+    massage_calendar_dates,
+    encap_poss_date
 )
+
+
+class TestEncapsulatePossibleDate(TestCase):
+    def test_base_spelled_out_date(self):
+        extracted_text = ["and", "then", "17", "October", "2022", "with", "some"]
+        month_index = 3
+        result = encap_poss_date(month_index, extracted_text)
+        self.assertEqual(result, "17 October 2022")
+    
+    def test_spelled_out_date_begin_str(self):
+        extracted_text = ["17", "October", "2022", "with", "some"]
+        month_index = 1
+        result = encap_poss_date(month_index, extracted_text)
+        self.assertEqual(result, "17 October 2022")
+    
+    def test_spelled_out_date_end_str(self):
+        extracted_text = ["with", "some", "17", "October", "2022"]
+        month_index = 3
+        result = encap_poss_date(month_index, extracted_text)
+        self.assertEqual(result, "17 October 2022")
 
 
 class TestGenerateDateSnippet(TestCase):
@@ -174,6 +195,19 @@ class TestExtractDates(TestCase):
         result = {}
         extract_dates(self.file_name, test_string, result, self.test_file_path)
         self.assertEqual("the date: Octorber 10,2020 and I", result)
+
+    def test_extracting_day_month_year_spelled_out(self):
+        test_string = "checking for the date: 12 November 2022 and I hope it works"
+        result = {}
+        extract_dates(self.file_name, test_string, result, self.test_file_path)
+        expected_result = {
+            "testFileName.pdf_[tmp]_2022-11-12": {
+                "date": "2022-11-12",
+                "snippet": '...date: 12 November 2022 and...',
+                "path": "some_file_path"
+            }
+        }
+        self.assertEqual(expected_result, result)
 
 
 class TestMassageExtractedDates(TestCase):
