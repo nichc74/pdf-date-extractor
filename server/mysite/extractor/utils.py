@@ -9,6 +9,7 @@ harbour_blue_hex = '#2f5a89'
 
 def generate_snippet(index, extracted_text):
     result = ""
+    trail_snip_txt = '...'
     # variable to account for length of snippet. Can be adjusted to add more words to snippet
     if LENGTH_OF_SNIPPET > len(extracted_text):
         result = ' '.join(extracted_text)
@@ -17,11 +18,11 @@ def generate_snippet(index, extracted_text):
         # Date is in middle of extracted_text
         if (index in range(mid_snip_offset, len(extracted_text) - mid_snip_offset)):
             # Do an add 1 at the end to account for index offset
-            result = ' '.join(extracted_text[index - mid_snip_offset:index + mid_snip_offset + 1])
+            result = trail_snip_txt + ' '.join(extracted_text[index - mid_snip_offset:index + mid_snip_offset + 1]) + trail_snip_txt
         elif index == 0:
-            result = ' '.join(extracted_text[index:index + LENGTH_OF_SNIPPET + 1])
+            result = ' '.join(extracted_text[index:index + LENGTH_OF_SNIPPET + 1]) + trail_snip_txt
         elif index == len(extracted_text) - 1:
-            result = ' '.join(extracted_text[index - LENGTH_OF_SNIPPET:index + 1])
+            result = trail_snip_txt + ' '.join(extracted_text[index - LENGTH_OF_SNIPPET:index + 1])
 
     return result
 

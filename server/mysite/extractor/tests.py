@@ -12,7 +12,7 @@ class TestGenerateDateSnippet(TestCase):
         # Test with
         date_index = 3
         extracted_text = ["Some", "with", "Nicholas", "10/10/2021", "for", "text"]
-        self.assertEqual("with Nicholas 10/10/2021 for text", generate_snippet(date_index, extracted_text))
+        self.assertEqual("...with Nicholas 10/10/2021 for text...", generate_snippet(date_index, extracted_text))
 
         # test JUST the date
         self.assertEqual("10/10/2021", generate_snippet(0, ["10/10/2021"]))
@@ -21,7 +21,7 @@ class TestGenerateDateSnippet(TestCase):
         date_index = 0
         # Test with full extracted_txt
         avge_len_extracted_txt = ["10/10/2021", "for", "text", "Nicholas", "some_more"]
-        self.assertEqual("10/10/2021 for text Nicholas some_more", generate_snippet(date_index, avge_len_extracted_txt))
+        self.assertEqual("10/10/2021 for text Nicholas some_more...", generate_snippet(date_index, avge_len_extracted_txt))
 
         # Test with smaller extracted_txt
         blw_len_extracted_txt = ["10/10/2021", "for", "text"]
@@ -31,7 +31,7 @@ class TestGenerateDateSnippet(TestCase):
         # Test with full snippet
         date_avg_len_index = 4
         avge_len_extracted_text = ["some_more", "for", "text", "Nicholas", "10/10/2021"]
-        self.assertEqual("some_more for text Nicholas 10/10/2021", generate_snippet(date_avg_len_index, avge_len_extracted_text))
+        self.assertEqual("...some_more for text Nicholas 10/10/2021", generate_snippet(date_avg_len_index, avge_len_extracted_text))
 
         # Test with smaller snippet
         date_blw_len_index = 2
@@ -52,7 +52,7 @@ class TestExtractDates(TestCase):
         expected_result = {
             "testFileName.pdf_[tmp]_2019-10-30": {
                 "date": "2019-10-30",
-                "snippet": '10/30/2019 Terms of Service |',
+                "snippet": '10/30/2019 Terms of Service |...',
                 "path": "some_file_path"
             }
         }
@@ -65,7 +65,7 @@ class TestExtractDates(TestCase):
         expected_result = {
             "testFileName.pdf_[tmp]_2020-10-10": {
                 "date": "2020-10-10",
-                "snippet": 'the date: 10-10-2020 and I',
+                "snippet": '...the date: 10-10-2020 and I...',
                 "path": "some_file_path"
             }
         }
@@ -78,7 +78,7 @@ class TestExtractDates(TestCase):
         expected_result = {
             "testFileName.pdf_[tmp]_2020-10-10": {
                 "date": "2020-10-10",
-                "snippet": 'the date: 10/10/2020 and I',
+                "snippet": '...the date: 10/10/2020 and I...',
                 "path": "some_file_path"
             }
         }
@@ -109,7 +109,7 @@ class TestExtractDates(TestCase):
         expected_result = {
             "testFileName.pdf_[tmp]_2020-10-10": {
                 "date": "2020-10-10",
-                "snippet": 'the date: 10/10/2020 and some\nsome other 10/10/2020 I hope',
+                "snippet": '...the date: 10/10/2020 and some...\n...some other 10/10/2020 I hope...',
                 "path": "some_file_path"
             },
         }
@@ -122,7 +122,7 @@ class TestExtractDates(TestCase):
         expected_result = {
             "testFileName.pdf_[tmp]_2020-10-10": {
                 "date": "2020-10-10",
-                "snippet": 'the date: 10/10/2020 and some',
+                "snippet": '...the date: 10/10/2020 and some...',
                 "path": "some_file_path"
             },
         }
@@ -155,12 +155,12 @@ class TestMassageExtractedDates(TestCase):
         self.extracted_dates = {
             'test_file.pdf_[tmp]_2019-10-30': {
                 'date': '2019-10-30',
-                'snippet': '10/30/2019 Terms of Service |',
+                'snippet': '10/30/2019 Terms of Service |...',
                 "path": "some_file_path"
             },
             'TestInsertMe.pdf_[tmp]_2020-11-11': {
                 'date': '2020-11-11',
-                'snippet': '11/11/2020 Iterating Over and Reducing',
+                'snippet': '11/11/2020 Iterating Over and Reducing...',
                 "path": "some_file_path"
             }
         }
@@ -172,7 +172,7 @@ class TestMassageExtractedDates(TestCase):
                 'name': 'test_file.pdf',
                 'start': '2019-10-30',
                 'color': '#2f5a89',
-                'snippet': '10/30/2019 Terms of Service |',
+                'snippet': '10/30/2019 Terms of Service |...',
                 "path": "some_file_path"
 
             },
@@ -180,7 +180,7 @@ class TestMassageExtractedDates(TestCase):
                 'name': 'TestInsertMe.pdf',
                 'start': '2020-11-11',
                 'color': '#2f5a89',
-                'snippet': '11/11/2020 Iterating Over and Reducing',
+                'snippet': '11/11/2020 Iterating Over and Reducing...',
                 "path": "some_file_path"
             }
         ]
