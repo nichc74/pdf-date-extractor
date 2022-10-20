@@ -58,10 +58,18 @@ export default {
         let data = response.data
         self.logOfExtractedDates = data.log_of_extracted_dates
         self.isLoading = false
+        self.$buefy.notification.open({
+          message: 'Files uploaded successfully!',
+          type: 'is-success'
+        })
       }).catch(function(error){
         console.log(error)
         console.log('FAILURE!!');
         self.isLoading = false
+        self.$buefy.notification.open({
+          message: 'Oops! Something went wrong. Please try again.',
+          type: 'is-danger'
+        })
       });
     }
   }
