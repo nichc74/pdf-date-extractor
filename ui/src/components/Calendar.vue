@@ -40,7 +40,7 @@
       </div>
       <v-calendar
         ref="calendar"
-        :events="otherEvents"
+        :events="events"
         @click:event="showEvent"
         v-model="focus"
         :type="type"
@@ -54,7 +54,7 @@
 export default {
   name: 'EventCalendar',
   props: {
-    otherEvents: Array
+    events: Array
   },
   data: () => {
     return {

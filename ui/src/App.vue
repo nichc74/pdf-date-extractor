@@ -2,7 +2,8 @@
   <v-app>
     <v-main>
       <div>
-        <Calendar :otherEvents="logOfExtractedDates"/>
+        <b-loading :is-full-page="isFullPage" v-model="isLoading"></b-loading>
+        <Calendar :events="logOfExtractedDates"/>
         <div class="fileUploader">
           <label class="pdfLabel">
             PDFs
@@ -26,7 +27,9 @@ export default {
   },
   data: () => ({
     files: '',
-    logOfExtractedDates: []
+    logOfExtractedDates: [],
+    isLoading: false,
+    isFullPage: true
   }),
   methods: {
     handleFileUploads(event){
@@ -34,6 +37,7 @@ export default {
     },
     submitPDFs() {
       let formData = new FormData();
+      this.isLoading = true
 
       // Append files to formData to prepare to send
       for(let i = 0; i < this.files.length; i++) {
@@ -47,15 +51,17 @@ export default {
         formData,
         {
           headers: {
-              'Content-Type': 'multipart/form-data',
+            'Content-Type': 'multipart/form-data',
           }
         }
       ).then(function(response) {
         let data = response.data
         self.logOfExtractedDates = data.log_of_extracted_dates
+        self.isLoading = false
       }).catch(function(error){
         console.log(error)
         console.log('FAILURE!!');
+        self.isLoading = false
       });
     }
   }
