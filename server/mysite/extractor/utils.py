@@ -14,7 +14,14 @@ from .constants import (
 )
 
 
-def generate_snippet(index, extracted_text):
+def generate_snippet(index: int, extracted_text: list) -> str:
+    """Generate a text snippet that contains date to be displayed
+
+    args:
+    index: The location of the date we have found in the array of
+           extracted texts
+    extracted_text: An array where each index is a word in the document
+    """
     result = ""
 
     if LENGTH_OF_SNIPPET > len(extracted_text):
@@ -35,7 +42,27 @@ def generate_snippet(index, extracted_text):
     return result
 
 
-def extract_dates(file_name, pdf_text, dates_for_curr_pdf, file_url):
+def extract_dates(file_name: str, pdf_text: str,
+                  dates_for_curr_pdf: dict, file_url: str):
+    """Given pdf page will extract dates and update ongoing dict obj of dates
+
+    In order to extract dates from the text we first must find them.
+    To do that we use a variety of regex expressions in order to check.
+    The current dates that we can pin down are as follows:
+
+    little endian: day Month Year
+    middle endian: MM/DD/YYYY, MM-DD-YYYY
+    big endian: YYYY/MM/DD, YYYY-MM-DD
+
+    When we find a date we store a snippet of the text with its date. We then
+    create a obj in the ingoing dict of dates(dates_for_curr_pdf).
+
+    args:
+    file_name: name of pdf file
+    pdf_text: string representation of a page of the pdf currently looking at
+    dates_for_curr_pdf: a dict containing all dates found in current pdf so far
+    file_url: url that links to server pdf preview
+    """
     extracted_text = re.split(r"\s|\n", pdf_text)
     for index in range(len(extracted_text)):
         word = extracted_text[index]
@@ -80,7 +107,12 @@ def extract_dates(file_name, pdf_text, dates_for_curr_pdf, file_url):
                 }
 
 
-def encap_poss_date(index, extracted_text):
+def encap_poss_date(index: int, extracted_text: list):
+    """For cutting out spelled out dates in extracted text list
+
+    index: The location of the date we have found in the array
+    extracted_text: An array where each index is a word in the document
+    """
     full_month_right_offset = 2
     full_month_left_offset = 1
 
@@ -89,12 +121,34 @@ def encap_poss_date(index, extracted_text):
     return ' '.join(extracted_text[date_left:date_right])
 
 
-def extract_and_format_date(date_format, regex, word):
-    regex_date = re.match(regex, word).string
-    return datetime.strptime(regex_date, date_format).strftime("%Y-%m-%d")
+def extract_and_format_date(curr_date_format: str, regex: str, date: str):
+    """Given a date format will convert date to a datetime object and then
+       format to %Y-%m-%d(format needed by calendar widgit)
+
+    curr_date_format: a datetime format code that matches date extracted.
+                      This is needed in order to convert date to datetime obj
+    regex: regex used to match the date
+    date: string of the date we have found
+    """
+    regex_date = re.match(regex, date).string
+    return datetime.strptime(regex_date, curr_date_format).strftime("%Y-%m-%d")
 
 
-def norm_cal_data(extracted_dates):
+def norm_cal_data(extracted_dates: dict):
+    """Given log of dates we have extracted from the PDFs we create a dict
+       with a specific format that fits the calendar widgit we are using
+
+    extracted_dates: log of all the dates we have collected in pdfs
+    format as so:
+    {
+        'file_name.pdf_[tmp]_YYYY-MM-DD': {
+            'date': 'YYYY-MM-DD',
+            'snippet': 'YYYY-MM-DD some snippet text here...',
+            "path": "url/path/to/preview/file"
+        },
+        ...
+    }
+    """
     result = []
 
     for key in extracted_dates.keys():
