@@ -9,14 +9,14 @@ from .constants import (
     regex_lttle_end_spelled,
     full_month_regex,
     harbour_blue_hex,
-    LENGTH_OF_SNIPPET
+    LENGTH_OF_SNIPPET,
+    TRAIL_SNIP_TXT
 )
 
 
 def generate_snippet(index, extracted_text):
     result = ""
-    trail_snip_txt = '...'
-    # variable to account for length of snippet. Can be adjusted to add more words to snippet
+
     if LENGTH_OF_SNIPPET > len(extracted_text):
         result = ' '.join(extracted_text)
     else:
@@ -24,13 +24,13 @@ def generate_snippet(index, extracted_text):
         # Date is in middle of extracted_text
         if (index in range(offset, len(extracted_text) - offset)):
             snippet = extracted_text[index - offset:index + offset + 1]
-            result = trail_snip_txt + ' '.join(snippet) + trail_snip_txt
+            result = TRAIL_SNIP_TXT + ' '.join(snippet) + TRAIL_SNIP_TXT
         elif index == 0:
             snippet = extracted_text[index:index + LENGTH_OF_SNIPPET + 1]
-            result = ' '.join(snippet) + trail_snip_txt
+            result = ' '.join(snippet) + TRAIL_SNIP_TXT
         elif index == len(extracted_text) - 1:
             snippet = extracted_text[index - LENGTH_OF_SNIPPET:index + 1]
-            result = trail_snip_txt + ' '.join(snippet)
+            result = TRAIL_SNIP_TXT + ' '.join(snippet)
 
     return result
 

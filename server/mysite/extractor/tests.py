@@ -116,7 +116,7 @@ class TestExtractDates(TestCase):
         self.assertEqual(expected_result, result)
 
     def test_multiple_dates_in_text(self):
-        test_string = ("checking for the date: 10/10/2020 and some"
+        test_string = ("checking for the date: 10/10/2020 and some "
                        "other 10/20/2020 I hope it works")
         result = {}
         extract_dates(self.file_name, test_string, result, self.test_file_path)

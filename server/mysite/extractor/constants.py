@@ -1,4 +1,5 @@
 LENGTH_OF_SNIPPET = 4
+TRAIL_SNIP_TXT = '...'
 
 # MM/DD/YYYY - middle endian
 regex_mid_end_with_slashes = "^(\d|\d{2})\/(\d|\d{2})\/(\d{4})$"
