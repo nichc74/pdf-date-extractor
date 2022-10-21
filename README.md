@@ -7,3 +7,5 @@ Once the containers have spun up you can hit:
 http://localhost:8080/
 
 Once the page has loaded you can start uploading files for extraction.
+
+..IN PROGRESS..
