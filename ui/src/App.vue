@@ -2,7 +2,7 @@
   <v-app>
     <v-main>
       <div>
-        <b-loading :is-full-page="isFullPage" v-model="isLoading"></b-loading>
+        <b-loading :is-full-page="true" v-model="isLoading"></b-loading>
         <Calendar :events="logOfExtractedDates"/>
         <div class="fileUploader">
           <label class="pdfLabel">
@@ -29,7 +29,6 @@ export default {
     files: '',
     logOfExtractedDates: [],
     isLoading: false,
-    isFullPage: true
   }),
   methods: {
     handleFileUploads(event){
@@ -64,7 +63,6 @@ export default {
         })
       }).catch(function(error){
         console.log(error)
-        console.log('FAILURE!!');
         self.isLoading = false
         self.$buefy.notification.open({
           message: 'Oops! Something went wrong. Please try again.',

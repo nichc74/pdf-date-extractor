@@ -13,7 +13,7 @@ regex_big_end_with_dashes = "^(\d{4})-(\d{1,2})-(\d{1,2})$"
 regex_lttle_end_spelled = (r"^(\d{1,2})\s((\bJanuary)|(\bFebruary)|(\bMarch)|"
                            r"(\bApril)|(\bMay)|(\bJune)|(\bJuly)|(\bAugust)|"
                            r"(\bSeptember)|(\bOctober)|(\bNovember)|"
-                           r"(\bDecember))\s(\d{4})")
+                           r"(\bDecember))\s(\d{4})$")
 
 full_month_regex = (r"^((\bJanuary)|(\bFebruary)|(\bMarch)|(\bApril)|(\bMay)|"
                     r"(\bJune)|(\bJuly)|(\bAugust)|(\bSeptember)|"

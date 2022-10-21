@@ -36,7 +36,7 @@ def generate_snippet(index, extracted_text):
 
 
 def extract_dates(file_name, pdf_text, dates_for_curr_pdf, file_url):
-    extracted_text = pdf_text.split(' ')
+    extracted_text = re.split(r"\s|\n", pdf_text)
     for index in range(len(extracted_text)):
         word = extracted_text[index]
         extracted_date = None
@@ -94,7 +94,7 @@ def extract_and_format_date(date_format, regex, word):
     return datetime.strptime(regex_date, date_format).strftime("%Y-%m-%d")
 
 
-def massage_calendar_dates(extracted_dates):
+def norm_cal_data(extracted_dates):
     result = []
 
     for key in extracted_dates.keys():
