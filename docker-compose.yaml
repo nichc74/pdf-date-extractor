@@ -1,0 +1,18 @@
+version: '3'
+services:
+  server:
+    build: ./server/mysite
+    volumes:
+    - ./server/mysite/:/server/
+    command: "python manage.py runserver 0.0.0.0:8000"
+    ports:
+    - 8000:8000
+
+  client:
+    build: ./ui
+    volumes:
+    - ./ui/:/client/
+    command: "npm run serve"
+    ports:
+    - 8080:8080
+
