@@ -3,7 +3,7 @@ from unittest import skip
 from extractor.utils import (
     generate_snippet,
     extract_dates,
-    massage_calendar_dates,
+    norm_cal_data,
     encap_poss_date
 )
 
@@ -243,7 +243,7 @@ class TestMassageExtractedDates(TestCase):
         }
 
     def test_simple_massage(self):
-        result = massage_calendar_dates(self.extracted_dates)
+        result = norm_cal_data(self.extracted_dates)
         expected_result = [
             {
                 'name': 'test_file.pdf',
